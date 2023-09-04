@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Country Data</title>
+    <!-- <link rel="stylesheet" href="./responsive.css"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="./site.webmanifest">
+    <style>
+    </style>
+</head>
+
+<body x-data="data()">
+    <div class="d1 bg-slate-200 min-h-screen flex items-center space-x-96 px-8 py-2">
+        <div class="d2 px-4 py-6 flex items-center">
+            <input type="text"
+                class="d4 my-72 ml-40 h-10 px-4 py-2 border-[1px] border-slate-900 text-slate-900 rounded-l-lg focus:outline-none"
+                placeholder="COUNTRY..." x-model="countryName">
+            <button
+                class="d5 my-72 w-max h-10 rounded-r-lg bg-slate-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-400 hover:text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600 duration-200"
+                @click="getData()">GET DATA</button>
+        </div>
+        <div class="d3 bg-slate-700 text-slate-100 h-96 rounded-xl w-full">
+            <div class="bg-slate-500 rounded-t-xl px-4 py-2 font-mono flex items-center justify-between">
+                <span class="font-bold">COUNTRY:- <span class="font-normal italic" x-text="data.name"></span></span>
+                <span class="font-bold">CONTINENT:- <span class="font-normal italic" x-text="data.region"></span></span>
+            </div>
+            <div class="px-4 py-2 flex flex-col space-y-4">
+                <span class="font-semibold">AREA:- <span class="font-normal italic" x-html="data.area"></span></span>
+                <span class="font-semibold">CAPITAL:- <span class="font-normal italic"
+                        x-text="data.capital"></span></span>
+                <span class="font-semibold">UNEMPLOYMENT:- <span class="font-normal italic"
+                        x-text="data.unemployment"></span></span>
+                <span class="font-semibold">GDP:- <span class="font-normal italic" x-text="data.gdp"></span></span>
+                <span class="font-semibold">GDP PER CAPITAL:- <span class="font-normal italic"
+                        x-text="data.gdpPerCap"></span></span>
+                <span class="font-semibold">GDP GROWTH:- <span class="font-normal italic"
+                        x-text="data.gdpGrowth"></span></span>
+                <span class="font-semibold">POPULATION:- <span class="font-normal italic"
+                        x-text="data.population"></span></span>
+                <span class="font-semibold">ISO:- <span class="font-normal italic" x-text="data.iso"></span></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        function data() {
+            return {
+                countryName: "",
+                data: {
+                    area: "",
+                    region: "",
+                    capital: "",
+                    unemployment: "",
+                    gdp: "",
+                    gdpPerCap: "",
+                    gdpGrowth: "",
+                    population: "",
+                    iso: "",
+                },
+                getData: async function () {
+                    const apiURL = `https://api.api-ninjas.com/v1/country?name=${this.countryName}`
+                    await fetch(apiURL, { headers: { 'X-Api-Key': 'VW0uNAyqPrs3lwqHVFMwtg==tmWPyiT96boVKgDT' } }).then((data) => data.json()).then((result) => {
+                        const data = result[0]
+                        this.data.area = `${(data.surface_area / 100000).toFixed(1) + " lakh"} km<sup>2</sup>`
+                        this.data.region = data.region
+                        this.data.capital = data.capital
+                        this.data.unemployment = data.unemployment + "%"
+                        this.data.gdp = (data.gdp / 1000000).toFixed(2) + ' trillion $'
+                        this.data.gdpPerCap = "$ " + data.gdp_per_capita
+                        this.data.gdpGrowth = data.gdp_growth + "%"
+                        this.data.population = (data.population / 1000000).toFixed(2) + ' billion'
+                        this.data.iso = data.iso2
+                    })
+
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
